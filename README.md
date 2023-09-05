@@ -13,7 +13,7 @@ Fue desarrollado haciendo uso de la herramienta Spark de java.
 
 1. Clonación del repositorio, haciendo uso del comando:
 ```
-   git clone 
+   git clone https://github.com/EdwarLozano/AREP-TALLER3.git
 ```
 2. Ejecución de la aplicación, sobre la carpeta donde se encuentran los archivos corriendo el método main de la clase **App.java**
 
@@ -23,10 +23,6 @@ Fue desarrollado haciendo uso de la herramienta Spark de java.
 5. 
 ## Pruebas 
 Probamos la aplicación en dos sistemas operativos para comprobar que corriera con normalidad en ambos.
-### Windows
-
-### MACOS
-
 
 ## Requisitos 
 - Java: Ambiente de desarrollo
