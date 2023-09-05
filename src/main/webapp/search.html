@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <title>BUSCA ARCHIVOS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: rgb(100, 0, 0);
+            height: 10vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .container{
+            background-color: white;
+            width: 30%;
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            height: 40px;
+        }
+
+        .container input{
+            flex: 1;
+            padding: 15px 10px;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            font-size: 20px;
+        }
+
+        .container button img {
+            width: 25px;
+        }
+
+        .container button {
+            padding: 10px 12px;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .headings{
+            font-family: "Kobenhavn CS Heavy", sans-serif;
+            display: inline;
+            margin-top: 30px;
+            font-size: 40px;
+            color: rgb(100, 0, 0);
+        }
+
+        .contenido{
+            background-color: rgb(133, 131, 131);
+            width: 80%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+        </style>
+        <script>
+            let connected;
+            let ws;
+            let flag = false;
+            function sendJSON() {
+              let path = document.querySelector("#path").value;
+              console.log(path);
+              function makeHttpObject() {
+                if ("XMLHttpRequest" in window) return new XMLHttpRequest();
+                else if ("ActiveXObject" in window)
+                  return new ActiveXObject("Msxml2.XMLHTTP");
+              }
+              function _arrayBufferToBase64(buffer) {
+                var binary = "";
+                var bytes = new Uint8Array(buffer);
+                var len = bytes.byteLength;
+                for (var i = 0; i < len; i++) { // Corregir el bucle aquí
+                  binary += String.fromCharCode(bytes[i]);
+                }
+                return window.btoa(binary);
+              }
+              var request = makeHttpObject();
+              request.withCredentials = false;
+              request.open("GET", "http://localhost:35000/file/" + path, true);
+              request.responseType = "arraybuffer";
+              request.send(null);
+              request.onreadystatechange = function () {
+                if (request.readyState == 4) {
+                  let responseDec = "";
+                  if (request.getResponseHeader("content-type").includes("image")) {
+                    document.getElementById("archivo").innerHTML =
+                      "No se pueden mostrar imágenes";
+                    document.getElementById("archivo").style.visibility = "visible";
+                  } else {
+                    var enc = new TextDecoder("utf-8");
+                    responseDec = enc.decode(request.response);
+                    console.log(responseDec + "1" );
+
+                    if (responseDec == "notFound") {
+                      // Redirige a la página de error
+                      console.log(responseDec  + "2");
+                      window.location.href = "notFound.html";
+                    } else {
+                      document.getElementById("archivo").innerHTML = responseDec;
+                      document.getElementById("archivo").style.visibility = "visible";
+                      console.log(responseDec  + "3");
+                    }
+                  }
+                }
+              };
+              flag = true;
+            }
+        </script>
+    </head>
+    <body>
+        <header>
+            <form class="container">
+                <input id="path" type="text" placeholder="Ingresa el path deseado">
+                <button type="button" class="search-button" onclick="sendJSON()">Buscar</button>
+            </form>
+        </header>
+        <br>
+        <div class="contenido">
+            <h1 class="headings">Archivo</h1>
+            <p id="archivo" style="color: black"></p>
+        </div>
+    </body>
+</html>
